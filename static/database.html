@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>WebSocket Demo</title>
+</head>
+<body>
+  <h1>🛰️ Spacetime Lite WebSocket Test</h1>
+  <div>
+    <label for="msg">Bericht:</label>
+    <input id="msg" type="text" />
+    <button onclick="sendMessage()">Stuur</button>
+  </div>
+  <pre id="log" style="margin-top: 20px; border: 1px solid #ccc; padding: 10px;"></pre>
+
+  <script>
+    const log = document.getElementById("log");
+    const ws = new WebSocket("ws://localhost:8080/ws");
+
+    ws.onopen = () => logMessage("✅ Verbonden met WebSocket server");
+    ws.onmessage = (event) => logMessage("📥 Ontvangen: " + event.data);
+    ws.onclose = () => logMessage("❌ Verbinding gesloten");
+    ws.onerror = (err) => logMessage("⚠️ Fout: " + err.message);
+
+    function sendMessage() {
+      const input = document.getElementById("msg");
+      const text = input.value;
+      ws.send(text);
+      logMessage("📤 Verstuurd: " + text);
+      input.value = "";
+    }
+
+    function logMessage(msg) {
+      log.textContent += msg + "\n";
+    }
+  </script>
+</body>
+</html>

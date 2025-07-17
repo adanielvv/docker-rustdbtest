@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Spacetime Lite</title>
+    <script src="https://unpkg.com/htmx.org@1.9.2"></script>
+    <script src="https://unpkg.com/htmx.org/dist/ext/json-enc.js"></script>
+</head>
+<body>
+    <h1>Entity Creator</h1>
+    <form
+        hx-post="/create"
+        hx-trigger="submit"
+        hx-target="#result"
+        hx-headers='{"Content-Type": "application/json"}'
+        hx-ext="json-enc"
+    >
+        <input type="text" name="name" placeholder="Enter name" required />
+        <button type="submit">Create Entity</button>
+    </form>
+    <h2>Entities</h2>
+    <button hx-get="/entities" hx-target="#entity-list" hx-swap="innerHTML">Refresh List</button>
+    <ul id="entity-list" hx-swap-oob="true">
+        <!-- entities komen hier realtime -->
+    </ul>
+
+    <script>
+    const ws = new WebSocket("ws://localhost:8080/ws");
+
+    ws.onmessage = function(event) {
+        const list = document.getElementById("entity-list");
+        const newItem = document.createElement("div");
+        newItem.innerHTML = event.data;
+        list.appendChild(newItem.firstChild);
+    };
+    </script>
+
+    <div id="result"></div>
+</body>
+</html>
+
